@@ -106,3 +106,44 @@ Closes the connection and returns to the connection screen.
 - No support for editing or deleting existing records (read + insert only)
 - Only one `works_on` entry can be added per employee insert
 - No pagination on large result sets
+Based on the technical specifications and setup instructions provided, here is the `README.md` file.
+---
+
+## Installation & Setup
+
+### 1. Initialize the Schema
+Import the database structure and sample data.
+
+```sql
+-- Create the database
+CREATE DATABASE companydb;
+```
+
+From your terminal, import the provided SQL dump:
+```bash
+mysql -u root -p companydb < companydb.sql
+```
+### 2. Authentication Plugin Fix
+If you encounter the error `Plugin 'auth_socket' is not supported` on Linux/Ubuntu, switch the root user to password authentication:
+
+```sql
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'your_password';
+FLUSH PRIVILEGES;
+```
+
+---
+
+## Database Logic
+The application implements strict **Atomic** and **Consistent** operations:
+* **Atomic Inserts:** Every new employee must be linked to a `works_on` project assignment in a single transaction.
+* **Validation:** If `hours` are recorded as $\le 0$, the script executes `db.rollback()` to prevent partial data entry.
+
+---
+
+## Project Structure
+```plaintext
+├── main.py            # Entry point; contains Tkinter GUI and App logic
+├── companydb.sql      # Database schema and sample data dump 
+└── README.md          # Documentation
+```
+
